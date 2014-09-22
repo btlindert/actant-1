@@ -1,63 +1,54 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEMO BATCH SCRIPT
+% BAHAR BATCH SCRIPT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % specify path to folder here. This folder should contain 4 subfolders,
 % called bin, mat, csd and txt.
-%   - ./bin contains all the raw data files
-%   - ./mat will store all the converted mat files
+%   - ./raw contains all the raw data files (bin, awd, aw5 etc.)
+%   - ./mat will store mat files containing the time series
 %   - ./csd contains all the sleep consensus diaries (according to supplied
 %     format)
 %   - ./txt will save all the sleep results from the every scd file
+clear all
+close all
+clc
+
+% subject IDs to include
+SUBJECTS = [1 3 5 7 10 11 19 21 22 24 26];
+
+% add path to actant
+addpath(genpath('d:\tresorit\matlab\actant-2'));
 
 % CHANGE THIS: data folder
-datapath = 'C:\path\to\your\data\';
+datapath = 'd:\data\recordings\bahar';
+%mkdir(datapath, 'mat');
+%mkdir(datapath, 'txt');
 
-addpath(genpath('C:\path\to\actant'));
-
-cd(datapath) 
-
-addpath('./bin');
-addpath('./mat');
-addpath('./scd');
-addpath('./txt');
+addpath(genpath(datapath));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BATCH CONVERT ALL BIN FILES TO MAT FILES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % create list of filenames in the .bin folder
-bin_files = dir('./bin/*.bin');
+raw_files = dir([datapath filesep 'raw' filesep '*.csv']);
 
 
-for i = 1:numel(bin_files)
-    tic
+for i = 1:numel(raw_files)
     % read variables from bin
-    [header, time, xyz, light, button, prop_val] = read_bin(bin_files(i).name);
+    data = load_actiware(raw_files(i).name);
     
-    % convert variables to timeseries objects
-    acc_x = timeseries(xyz(:,1), time, 'Name', 'ACCX');
-    acc_x.DataInfo.Unit = 'g';
-    acc_y = timeseries(xyz(:,2), time, 'Name', 'ACCY');
-    acc_y.DataInfo.Unit = 'g';
-    acc_z = timeseries(xyz(:,3), time, 'Name', 'ACCZ');
-    acc_z.DataInfo.Unit = 'g';
-    light = timeseries(light, time, 'Name', 'LIGHT');
-    light.DataInfo.Unit = 'lux';
-    temp = timeseries(prop_val(:,2), time, 'Name', 'TEMP');
-    temp.DataInfo.Unit = 'degC';
-    button = timeseries(button, time, 'Name', 'BUTTON');
-    button.DataInfo.Unit = 'binary';
-
+    act    = data.act;
+    button = data.button;
+    light  = data.light;
+    
     % save file
     % specify filename/filepath
-    fout = ['./mat/' bin_files(i).name(1:end-4) '.mat'];
-    save(fout, 'acc_x', 'acc_y', 'acc_z', 'light',...
-        'temp', 'button', 'header', '-v7.3');
+    fout = [datapath filesep 'mat' filesep raw_files(i).name(1:end-4) '.mat'];
+    save(fout, 'act', 'button', 'light', '-v7.3');
    
     % scrap all for new round
-    clearvars -except bin_files bin_filepath
-    toc
+    clearvars -except raw_files datapath
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,15 +58,15 @@ end
 % specify algorithm properties
 args1{1,1} = 'Algorithm';   args1{1, 2} = 'oakley';
 args1{2,1} = 'Method';      args1{2, 2} = 'i';
-args1{3,1} = 'Sensitivity'; args1{3, 2} = 'm';
+args1{3,1} = 'Sensitivity'; args1{3, 2} = 'h';
 args1{4,1} = 'Snooze';      args1{4, 2} = 'on';
 args1{5,1} = 'Time window'; args1{5, 2} = 10; 
 
 % create list with .mat files
-mat_files = dir('./mat/*.mat');
+mat_files = dir([datapath filesep 'mat' filesep '*.mat']);
 
 % create list with sleep consensus diaries (.csv, COMMA seperated, not TAB or SEMICOLON) files
-scd_files = dir('./scd/*.csv');
+scd_files = dir([datapath filesep 'scd' filesep '*.csv']);
 
 % check the number of files in the SCD folder, which will be limiting
 % factor
@@ -92,10 +83,10 @@ scd_files = dir('./scd/*.csv');
 % a csv file
 
 for file = 1:numel(scd_files)
-    
+    disp(num2str(file))
     % load only the acc_z variable from the data file
-    load(mat_files(file).name, 'acc_z')
-    
+    load(mat_files(file).name, 'act')
+  
     % load SCD file
     % this should be a .csv file (comma seperated) with 8 columns 
     % columns 1 (date), 3 (sleep onset) and 7 (out of bed) are used  
@@ -114,13 +105,13 @@ for file = 1:numel(scd_files)
     end
    
     % pass the acc_z, args1 and args2 to the algorithm
-    [~, vals] = actant_oakley(acc_z, args1, args2);
+    [~, vals] = actant_oakley(act, args1, args2);
     
     % open file to write data to 
-    fid = fopen(['./txt/' scd_files(file).name(1:end-4) '.txt'], 'w');
+    fid = fopen([datapath filesep 'txt' filesep scd_files(file).name(1:end-4) '.txt'], 'w');
     
     % put in headers, all strings
-    fprintf(fid, '%s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %f\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\n',...
+    fprintf(fid, '%s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\n',...
         vals{:,1});
     
     % load columns from vals and store as rows in txt, both strings and numbers
@@ -135,20 +126,8 @@ for file = 1:numel(scd_files)
     
 end
 
-
-
-%% get the mean temperature per 30 second epoch?
-% load temp data
-
-% average temperature per 30 sec epoch
-
-% write to csv file
-
-
-
-%% get the activity classification data
-% remove non-wear periods
-
-% interpolate
-
-% classify
+% files 2, 9, 10, 17, 18, 19, 20 fail
+%akg001_week6
+%akg010_week1
+%akg024_week1
+% 2,9,19 miss values in scd 
