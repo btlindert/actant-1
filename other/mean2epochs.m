@@ -15,7 +15,7 @@ function epochdata = mean2epochs(data, fs, epoch)
 %
 % See also MAX2EPOCHS
 %
-% Copyright (C) 2011-2013, Bart te Lindert
+% Copyright (C) 2011-2014, Bart te Lindert
 %
 % All rights reserved.
 %
@@ -27,7 +27,7 @@ function epochdata = mean2epochs(data, fs, epoch)
 %  - Redistributions in binary form must reproduce the above copyright notice,
 %    this list of conditions and the following disclaimer in the documentation
 %    and/or other materials provided with the distribution.
-%  - Neither the name of the University of Oxford nor the names of its
+%  - Neither the name of the Netherlands Institute for Neuroscience nor the names of its
 %    contributors may be used to endorse or promote products derived from this
 %    software without specific prior written permission.
 %

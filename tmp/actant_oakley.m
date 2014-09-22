@@ -2,6 +2,10 @@ function [ts, vals] = actant_oakley(act, args1, args2)
 % OAKLEY markup epochs with activity counts as sleep/wake and extract sleep
 % parameters
 %
+% Description:
+%   todo
+%   
+%
 % Arguments:
 %   data  - Input data timeseries (can be ACCZ or ACT)
 %   args1 - {5 x 1} Cell array of algorithm arguments
@@ -25,7 +29,7 @@ function [ts, vals] = actant_oakley(act, args1, args2)
 %   ts -   Cell array of timeseries
 %   vals - Cell array of sleep results
 %
-% Copyright (c) 2011-2014 Bart te Lindert
+% Copyright (c) 2011-2013 Bart te Lindert
 %
 % See also: Oakley NR. Validation with polysomnography of the Sleepwatch 
 %           sleep/wake scoring algorithm used by the Actiwatch activity 
@@ -45,7 +49,7 @@ function [ts, vals] = actant_oakley(act, args1, args2)
 %  - Redistributions in binary form must reproduce the above copyright notice,
 %    this list of conditions and the following disclaimer in the documentation
 %    and/or other materials provided with the distribution.
-%  - Neither the name of the Netherlands Institute for Neuroscience nor the names of its
+%  - Neither the name of the University of Oxford nor the names of its
 %    contributors may be used to endorse or promote products derived from this
 %    software without specific prior written permission.
 %
@@ -95,7 +99,7 @@ if strcmpi(act.Name, 'ACT')
         sampling = 15;
     elseif strcmpi(increment, '00:30')
         sampling = 30;
-    elseif strcmpi(increment, '01:00')
+    elseif strcmpi(increment, '01:30')
         sampling = 60;
     elseif strcmpi(increment, '02:00')
         sampling = 120;
@@ -243,10 +247,9 @@ for day = 1:days
     % get data from COUNTS and WAKE
     % only one will be used in either algorithm (i or sw), but both are 
     % needed for calculating the sleep parameters 
-    
-    % PLEASE NOTE THAT COUNTS AND NOT SCORE IS USED IN THE ALGORITHM 
+    % PLEASE NOTE THAT COUNTS AND NOT SCORE IS USED IN THE ALGORITHM
     tsScore = getsampleusingtime(counts, startTime, endTime);
-    dataCounts = tsScore.Data;
+    dataScore = tsScore.Data;
         
     tsWake = getsampleusingtime(wake, startTime, endTime);
     dataWake = tsWake.Data;
@@ -264,9 +267,9 @@ for day = 1:days
         window = ratio*timewindow; % number of epoch in 10 minute window
         
         % sleep onset time
-        for i = 1:numel(dataCounts)
+        for i = 1:numel(dataScore)
             % calulate number of mobile epochs
-            n = dataCounts(i:i+window-1) >= sampling/15;
+            n = dataScore(i:i+window-1) >= sampling/15;
             if sum(n) <= 1; % allow for max 1 epoch of mobility
                 break 
             else
@@ -278,9 +281,9 @@ for day = 1:days
         
         if strcmpi(snooze, 'on');
             % final wake time
-            for j = numel(dataCounts):-1:1
+            for j = numel(dataScore):-1:1
                 % calculate number of mobile epochs
-                n = dataCounts(j-window+1:j) >= sampling/15;
+                n = dataScore(j-window+1:j) >= sampling/15;
                 if sum(n) <= 1; % allow for max 1 epoch of mobility
                     break 
                 else
@@ -290,7 +293,7 @@ for day = 1:days
             % calculated final wake time
             idx_fwt = j;
         else
-            idx_fwt = numel(dataCounts);
+            idx_fwt = numel(dataScore);
         end
         
     % sleep/wake algorithm
@@ -327,12 +330,12 @@ for day = 1:days
             % calculated final wake time
             idx_fwt = j;
         else
-            idx_fwt = numel(dataCounts);
+            idx_fwt = numel(dataScore);
         end
         
     elseif strcmpi(method, 'None')       
         idx_sot = 1;
-        idx_fwt = numel(dataCounts);
+        idx_fwt = numel(dataScore);
 
     end
 
@@ -508,7 +511,7 @@ for day = 1:days
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % check s/w epochs ebtween gui and actiware
-save('d:/tresorit/data/sleepwake.mat', 'wake');
+%save('d:/tresorit/data/sleepwake.mat', 'wake');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % define output timeseries

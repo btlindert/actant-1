@@ -85,7 +85,8 @@ ts.act = timeseries(data(:, 1), time, 'Name', 'ACT');
 ts.act.DataInfo.Unit = 'counts';
 ts.act.TimeInfo.Units = 'seconds';
 %ts.act.TimeInfo.Increment = sampling;
-ts.act.TimeInfo.StartDate = 'JAN-00-0000 00:00:00';
+%ts.act.TimeInfo.StartDate = 'JAN-00-0000 00:00:00';
+
 
 if size(data,2) == 2    
     ts.light = timeseries(data(:, 2), time, 'Name', 'LIGHT');
