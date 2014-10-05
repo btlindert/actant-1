@@ -506,10 +506,6 @@ for day = 1:days
            
     counts = addevent(counts, names, times);
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% check s/w epochs ebtween gui and actiware
-save('d:/tresorit/data/sleepwake.mat', 'wake');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % define output timeseries
 ts = counts;

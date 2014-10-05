@@ -1,0 +1,31 @@
+Sleep - Sleep scoring alogrithms for actigraphy
+
+Copyright (C) 2013-2014, Bart te Lindert <b.te.lindert@nin.knaw.nl>
+
+This toolbox include multiple data analysis algorithms implemented in
+Matlab and released under Open Source licences. Respective licences are
+referenced directly in the code of specific Matlab functions.
+
+1. References
+=============
+
+ - Sleep analysis: 
+   Oakley NR. "Validation with polysomnography of the Sleepwatch 
+   sleep/wake scoring algorithm used by the Actiwatch activity 
+   monitor system: Technical Report to Mini-Mitter Co., Inc., 1997.
+    
+   Kushida CA, Chang A, Gadkary C, Guilleminault C, Carrillo O, Dement
+   WC. "Comparison of actigraphic, polysomnographic, and subjective assessment
+   of sleep parameters in sleep-disordered patients." Sleep Medicine
+   2001; 2:389-96.
+
+   te Lindert BHW, Van Someren EJW. "Sleep estimates using microelectro-
+   mechanical systems (MEMS)." SLEEP 2013;36(5):781-789
+
+
+2. Contributions
+================
+
+Authors would appreciate your contributions to the Actant project (code can
+be found at https://github.com/maximosipov/actant). Also, you are invited
+to contrubute your datasets to Physionet (http://www.physionet.org/).
