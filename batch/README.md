@@ -2,7 +2,7 @@ BATCH PROCESSING OF ACTIGRAPHY DATA
 
 Actiwatch (.awd) and Geneactiv (.bin) files can be batch processed to extract sleep variables. 
 Awd files need no further processing, but .bin files need to be converted to .mat files before they can be analysed. Conversion to .mat files only has to be performed once using 'batchConversion.m'. Subsequent analyses are done with the .mat files as input.
-See batchBin.m and batchAwd.m for examples.
+See 'batchBin.m' and 'batchAwd.m' for examples.
 
 For the sleep variables to be estimated, the scoring algorithm needs sleep diaries in a specific format and saved to a csv file. The separator can be , or , but make sure you modify the batch file accordingly.
 

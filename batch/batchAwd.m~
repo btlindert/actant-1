@@ -1,14 +1,13 @@
-%% Batch processing of .mat (from geneactiv .bin) files
+%%% Batch processing of .mat (from geneactiv .bin) files
 % In this example the files are assumed to be given consistent filenames:
 % [projectId]_[subjectId]_[modality]_[session].[extension]
 % i.e. for mat:
-%   - xxxx_0001_actigraphy_week.mat
+%   - xxxx_0001_actigraphy_week.awd
 % and for the sleep diary:
 %   - xxxx_0001_diray_week.csv
 
-
 % Specify folders.
-MAT_FOLDER    = 'path/to/the/mat/files/';
+AWD_FOLDER    = 'path/to/the/mat/files/';
 CSD_FOLDER    = 'path/to/the/sleep/diaries/';
 OUTPUT_FOLDER = 'path/to/output/';
 
@@ -22,20 +21,13 @@ settings{3,1} = 'Sensitivity'; settings{3, 2} = 'm';
 settings{4,1} = 'Snooze';      settings{4, 2} = 'on';
 settings{5,1} = 'Time window'; settings{5, 2} = 10; 
 
-% Specify subject Ids.
-nSubjects = 1:100;
-
-% loop through all files, loading the mat and csv file for each subject and
-% then processing the data, and storing the results (output called vals) to
-% a csv file
-
 for iSubject = nSubjects
     
     % Load only the acc_z variable from the mat file.
-    matFile     = ['xxxx_' sprintf('%04.0f', iSubject) '_actigraphy_week.mat'];
-    matFilePath = [MAT_FOLDER matFile];
+    awdFile     = ['xxxx_' sprintf('%04.0f', iSubject) '_actigraphy_week.awd'];
+    awdFilePath = [AWD_FOLDER awdFile];
     
-    load(matFilePath, 'acc_z');
+    ts = load_actiwatch(awdFilePath)
     
     % Load consensus sleep diary file.
     csdFile     = ['xxxx_' sprintf('%04.0f', iSubject) '_diary_week.csv'];
@@ -65,7 +57,8 @@ for iSubject = nSubjects
     [~, sleepScores] = actant_oakley(acc_z, settings, csdData);
     
     % Open file to write data to. 
-    fid = fopen([OUTPUT_FOLDER 'xxxx_' sprintf('%04.0f', iSubject),'_sleepScores.txt'], 'w');
+    fid = fopen([OUTPUT_FOLDER 'xxxx_' sprintf('%04.0f', iSubject),...
+                 '_sleepScores.txt'], 'w');
     
     % Put in the sleep variable headers first.
     fprintf(fid, '%s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\t %s\n',...
