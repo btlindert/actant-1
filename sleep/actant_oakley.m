@@ -524,7 +524,7 @@ time = get(ts, 'Time');
 increment = str2double(datestr(time(2)-time(1), 'FFF'));
 
 % sampling frequency
-fs = (1/increment)*1000;
+fs = fix((1/increment)*1000);
 
 if isnan(fs)
     errordlg('Samplig rate is NaN!');
