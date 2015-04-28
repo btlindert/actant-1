@@ -1,6 +1,6 @@
-# Sleep - Sleep scoring alogrithms for actigraphy
+# Sleep scoring alogrithm for actigraphy
 
-Copyright (C) 2013-2014, Bart te Lindert <b.te.lindert@nin.knaw.nl>
+Copyright (C) 2013-2015, Bart te Lindert <b.te.lindert@nin.knaw.nl>
 
 This toolbox includes multiple data analysis algorithms implemented in
 Matlab and released under Open Source licences. Respective licences are
@@ -9,11 +9,11 @@ referenced directly in the code of specific Matlab functions.
 ## Analysing data files
 
 Files can be analysed individually using the graphical user interface or in a batch 
-using batch scripts. A description of how to batch process files can be found [here](./batch/README.md) 
+using batch scripts. A description of how to batch process files can be found [here](/batch/README.md) 
 
 ## Graphical user interface (gui)
 
-To start the gui, run 'actant.m'. An empty graphical user interface (GUI) will open.
+To start the gui, run `actant.m`. An empty graphical user interface (GUI) will open.
 
 ## File conversion
 
