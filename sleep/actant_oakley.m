@@ -336,26 +336,26 @@ for day = 1:days
 
     end
 
-    % SCD: In bed time
-    % The time the subjects gets into bed, as filled out in the sleep
+    % CSD: In bed time
+    % The time the subject gets into bed, as filled out in the sleep
     % consensus diary and passed to this function in args2
     %scdInBedTime = datenum(args2{day, 2})
     scdInBedTime = dateconversion(args2{day, 1}, args2{day, 2});
   
-    % SCD: Lights off time/trying to fall asleep
-    % The time the subjects switches off the lights or starts to try
+    % CSD: Lights off time/trying to fall asleep
+    % The time the subject switches off the lights or starts to try
     % to fall asleep, as filled out in the sleep consensus diary, 
     % and passed to this function in args2
     %scdLightsOffTime = datenum(args2{day, 3})
     scdLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3});
     
-    % SCD: Final wake time
+    % CSD: Final wake time
     % The time the subject woke up, as filled out in the sleep consensus
     % diary and passed to this function in args2
     %scdFinalWakeTime = datenum(args2{day, 7})
     scdFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}); 
     
-    % SCD: Out of bed time
+    % CSD: Out of bed time
     % The time the subject got out of bed as filled out in the sleep consensus
     % diary and passed to this function in args2
     %scdOutOfBedTime = datenum(args2{day, 8})
