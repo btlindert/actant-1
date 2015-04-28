@@ -7,8 +7,8 @@
 % your pc (processor speed, ram availability).
 
 % Specify input and output folder.
-INPUT_FOLDER  = 'path/to/some/folder/';
-OUTPUT_FOLDER = 'path/to/some/other/folder/';
+INPUT_FOLDER  = '/path/to/some/folder';
+OUTPUT_FOLDER = '/path/to/some/other/folder';
 
 % Create list of bin filenames the input folder.
 binFiles = dir([INPUT_FOLDER '*.bin']);
@@ -17,7 +17,7 @@ binFiles = dir([INPUT_FOLDER '*.bin']);
 for iFile = 1:numel(binFiles)
     
     % Read variables from bin file.
-    [header, time, xyz, light, button, prop_val] = read_bin(binFiles(iFile).name);
+    [header, time, xyz, light, button, prop_val] = read_bin([INPUT_FOLDER binFiles(iFile).name]);
     
     % Convert variables to timeseries objects.
     acc_x = timeseries(xyz(:,1), time, 'Name', 'ACCX');
