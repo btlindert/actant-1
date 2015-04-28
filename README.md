@@ -34,7 +34,7 @@ analysis methods include:
    mechanical systems (MEMS)." SLEEP 2013;36(5):781-789
 
 - Sample Entropy:
-  -Richman, Joshua S, Randall Moorman J. "Physiological time-series analysis 
+  - Richman, Joshua S, Randall Moorman J. "Physiological time-series analysis 
    using approximate entropy and sample entropy." American Journal of 
    Physiology-Heart and Circulatory Physiology 2000; 278(6):H2039-H2049.
 
