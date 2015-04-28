@@ -1,4 +1,4 @@
-# Sleep scoring alogrithm for actigraphy
+# Sleep scoring algorithm for actigraphy
 
 Copyright (C) 2013-2015, Bart te Lindert <b.te.lindert@nin.knaw.nl>
 
@@ -56,17 +56,16 @@ The results are usuallly slightly, but can be very, different for Cambridge Neur
 
 ## References
 
- - Sleep analysis: 
-   Oakley NR. "Validation with polysomnography of the Sleepwatch 
+ - Oakley NR. "Validation with polysomnography of the Sleepwatch 
    sleep/wake scoring algorithm used by the Actiwatch activity 
    monitor system: Technical Report to Mini-Mitter Co., Inc., 1997.
     
-   Kushida CA, Chang A, Gadkary C, Guilleminault C, Carrillo O, Dement
+ - Kushida CA, Chang A, Gadkary C, Guilleminault C, Carrillo O, Dement
    WC. "Comparison of actigraphic, polysomnographic, and subjective assessment
    of sleep parameters in sleep-disordered patients." Sleep Medicine
    2001; 2:389-96.
 
-   te Lindert BHW, Van Someren EJW. "Sleep estimates using microelectro-
+ - te Lindert BHW, Van Someren EJW. "Sleep estimates using microelectro-
    mechanical systems (MEMS)." SLEEP 2013;36(5):781-789
 
 
