@@ -2,7 +2,7 @@ Sleep - Sleep scoring alogrithms for actigraphy
 
 Copyright (C) 2013-2014, Bart te Lindert <b.te.lindert@nin.knaw.nl>
 
-This toolbox include multiple data analysis algorithms implemented in
+This toolbox includes multiple data analysis algorithms implemented in
 Matlab and released under Open Source licences. Respective licences are
 referenced directly in the code of specific Matlab functions.
 
