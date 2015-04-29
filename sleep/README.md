@@ -2,10 +2,6 @@
 
 Copyright (C) 2013-2015, Bart te Lindert <b.te.lindert@nin.knaw.nl>
 
-This toolbox includes multiple data analysis algorithms implemented in
-Matlab and released under Open Source licences. Respective licences are
-referenced directly in the code of specific Matlab functions.
-
 ## Analysing data files
 
 Files can be analysed individually using the graphical user interface or in a batch 
@@ -46,8 +42,85 @@ front of the counts time series and update the plot. The bed times, sleep times,
 
 ![Consensus sleep diary](/img/csd.png "Consensus sleep diary") 
 
+## Estimated sleep variables
 
-## How do the results compare to other software?
+A description of each of the calculated sleep variables is given below. The actual formulas for calculating the sleep variables can be found at the end of the `actant_oakley.m` script. 
+
+
+![Sleep variables](/img/sleepvars.png "Sleep variables") 
+
+### CSD: In bed time
+The time the subject gets into bed, as filled out in the consensus sleep diary. 
+  
+### CSD: Lights off time
+The time the subject switches off the lights or starts to try to fall asleep, as filled out in the consensus sleep diary.
+
+### CSD: Final wake time
+The time the subject woke up, as filled out in the consensus sleep diary.
+    
+### CSD: Out of bed time
+The time the subject got out of bed as filled out in the consensus sleep diary. 
+
+### Time in bed
+Time (in minutes) between `In bed time` and `Out of bed time`. 
+
+### Sleep onset time
+Time the subject fell asleep as calculated by the algorithm.
+
+### Sleep onset latency (SOL)
+Time (in minutes) between `Lights off time` and `Sleep onset time`, i.e. the time it took the subject to fall asleep.
+    
+### Final wake time
+Time the subject woke up in the morning as calculated by the algorithm, if `SNOOZE = ON`. If `SNOOZE=OFF`, time is equal to `CSD: Final wake time`.
+
+### Assumed sleep time
+Time between `Sleep onset time` and `Final wake time`.
+    
+### Snooze time 1
+Time between the calculated `Final wake time` and `CSD: Final wake time`.
+    
+### Snooze time 2
+Time between the calculated `Final wake time` and `CSD: Out of bed time`.
+
+### Wake after sleep onset (WASO)
+The number of epochs scored as WAKE between `Sleep onset time` and `Final wake time` multiplied by the epoch length.    
+An epoch is scored as `WAKE` if the weighted activity counts is greater than the wake threshold (set in the algorithm parameters).
+
+### Actual sleep time
+The number of epochs scored as `SLEEP` between 'Sleep onset time' and 'Final wake time' multiplied by the epoch length.
+An epoch is scored as `SLEEP` if the weighted activity counts is equal to or less than the wake threshold (set in the algorithm parameters).
+
+### Analysis period
+Time between `CSD: Lights off time` and `CSD: Final wake time`.
+    
+### Sleep efficiency 1
+The `Actual sleep time` divided by `Analysis period` multiplied by 100. 
+    
+### Sleep efficiency 2
+The `Actual sleep time` divided by `Time in bed` multiplied by 100.
+
+### Number of wake bouts
+Number of continuous blocks, one or more epochs in duration, with each epoch of each block scored as `WAKE` 
+in the `Assumed sleep time`.
+
+### Mean wake bout time
+The `Wake after sleep onset` divided by the `Number of wake bouts`.
+
+### Number of sleep bouts
+Number of continuous blocks, one or more epochs in duration, with each epoch of each block scored as `SLEEP` 
+in the `Assumed sleep time`.
+    
+### Mean sleep bout time
+The `Actual sleep time` divided by the `Number of sleep bouts`.
+
+### Mobile time
+Total duration of epochs with activity (>0) in the `Assumed sleep time` period.
+
+### Immobile time
+Total duration of epochs with no activity (=0) in the `Assumed sleep time` period.
+
+
+## How do the calculated variables compare to other software?
 The results are identical (or 1 epoch off) to recent versions of Respironics' Actiware. You can verify it yourself by analysing a .awd counts file using the Actiware software and these scripts and using the the same sleep diary.
 Actiware has an automatic feature that automatically selects the major rest periods in the absence of sleep diaries. This is extremely handy, but I haven't been able to reproduce their results. If you have suggentions on how to estimate tehse, please let me know.
 
