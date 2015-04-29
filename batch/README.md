@@ -22,6 +22,7 @@ one `.csv` file for every subject (or actigraphy file).
 
 So an example `.csv` sleep diary would look like this:
 
+```
 Date, inBedTime, lightsOffTime, sol, awakenings, awakeningsDuration, wakeTime, outOfBedTime     
 16-10-2009, 2230, 2345,  45, 1,  30, 0700, 0730    
 17-10-2009, 2330, 2355,  30, 1,  10, 0730, 0830    
@@ -30,5 +31,5 @@ Date, inBedTime, lightsOffTime, sol, awakenings, awakeningsDuration, wakeTime, o
 20-10-2009, 2245, 2245,  30, 0,  30, 0800, 0830     
 21-10-2009, 2315, 2320, 240, 0, 240, 0830, 0850    
 22-10-2009, 2345, 0000, 120, 0, 120, 0830, 0845    
- 
+```
  
