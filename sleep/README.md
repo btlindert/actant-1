@@ -2,6 +2,23 @@
 
 Copyright (C) 2013-2015, Bart te Lindert <b.te.lindert@nin.knaw.nl>
 
+The original version of these sleep scripts have been used in `te Lindert & van Someren, 2013`. They were rewritten to a format
+compatible with this `actant` toolbox. 
+
+Currently, there are no validated algorithms that use raw 3D accelerometry to estimate sleep(stages). Most devices/algorithms reduce the data to counts. 
+Therefore, the study's aim was to estimate Actiwatch-like activity counts from 3D accelerometry. This would allow applying the Actiwach/Oakley algorithm and extract the sleep features. 
+ 
+In a nutshell the study did the following:
+ - Simultaneously record 3D accelerometry and Actiwach counts.
+ - Convert 3D data to counts based on the onboard processing of the Actiwatch.
+  - Use only the palmar-dorsal axis (z-axis).
+  - Bandpass filter (3-11 Hz).
+  - Divide amplitude into 128 bins.
+  - Remove residual baseline noise.
+  - Set any negative values to 0.
+ - The magnitude of 3D-derived counts was substantially smaller than the Actiwatch counts, so it was scaled by 3.07.
+ - Apply the Actiwatch algorithm to both counts time series, extracted the sleep features and compared the results.
+
 ## Analysing data files
 
 Files can be analysed individually using the graphical user interface or in a batch 
