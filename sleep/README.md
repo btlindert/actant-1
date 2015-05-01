@@ -22,11 +22,11 @@ In a nutshell the study did the following:
 ## Analysing data files
 
 Files can be analysed individually using the graphical user interface or in a batch 
-using batch scripts. A description of how to batch process files can be found [here](/batch/README.md) 
+using batch scripts. A description of how to batch process files can be found [here](/batch/README.md). 
 
 ## Graphical user interface (gui)
 
-To start the gui, run `actant.m`. An empty graphical user interface (GUI) will open.
+To start the gui, run `actant.m`. An empty gui will open.
 
 ## File conversion
 
