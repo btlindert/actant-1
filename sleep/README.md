@@ -41,12 +41,15 @@ Select the input (`.bin`) file and the output (`.mat`) file name and destination
 
 Files that have been converted to `.mat` can be loaded by `File -> Open dataset`. The file is being loaded and the time series contained in the data file are displayed in the lower left window.
 These time series can be plotted in the main window. To display a time series, in the `Show` column select `Main` in front of the time series that you wish to display and press `Update` (see Figure 1) .
-You can use the additional options (Main, Top, Markup) in the ‘Show’ dropdown to plot multiple time series (Figure 2). The options `Plots`, `Days`, `Overlap`, `Main`, `Top` can be used to adjust 
+You can use the additional options (`Main`, `Top`, `Markup`) in the `Show` dropdown to plot multiple time series (Figure 2). The options `Plots`, `Days`, `Overlap`, `Main`, `Top` can be used to adjust 
 the plot to e.g. double plots which are common in sleep research by centering the night (days = 2, overlap = 1).
 
 ![Main](/img/main.png "Main plot")
+Figure 1: Raw x-axis accelerometry (`ACCX`) plotted as the main time series, 5 plots within the window
+(the remaining days can be displayed by scrolling down), 1 day per plot and 0 overlap. 
 
 ![Main and top](/img/maintop.png "Main and top plot")
+Figure 2: The same plot as Figure 1, but the `Light` time series has been added to the `Top` plot.
 
 ## Sleep analysis
 
@@ -58,16 +61,18 @@ The estimated sleep parameters will be displayed in the lower right window. You�
 front of the counts time series and update the plot. The bed times, sleep times, wake times, and out of bed times will be plotted with a line.
 
 ![Consensus sleep diary](/img/csd.png "Consensus sleep diary") 
+Figure 3: Consensus Sleep Diary window.
 
 ## Estimated sleep variables
 
 A description of each of the calculated sleep variables is given below. The actual formulas for calculating the sleep variables can be found at the end of the `actant_oakley.m` script. 
 
-
 ![Sleep variables](/img/sleepvars.png "Sleep variables") 
+Figure 4: Graphical representation of some of the (calculated) sleep parameters. The black arrows indicate the time points
+from which the algorithm starts to estimate sleep onset or final wake time (if `SNOOZE = ON`).
 
 ### CSD: In bed time
-The time the subject gets into bed, as filled out in the consensus sleep diary. 
+The time the subject gets into bed, as filled out in the consensus sleep diary (Figure 4). 
   
 ### CSD: Lights off time
 The time the subject switches off the lights or starts to try to fall asleep, as filled out in the consensus sleep diary.
@@ -88,7 +93,7 @@ Time the subject fell asleep as calculated by the algorithm.
 Time (in minutes) between `Lights off time` and `Sleep onset time`, i.e. the time it took the subject to fall asleep.
     
 ### Final wake time
-Time the subject woke up in the morning as calculated by the algorithm, if `SNOOZE = ON`. If `SNOOZE=OFF`, time is equal to `CSD: Final wake time`.
+Time the subject woke up in the morning as calculated by the algorithm, if `SNOOZE = ON`. If `SNOOZE = OFF`, time is equal to `CSD: Final wake time`.
 
 ### Assumed sleep time
 Time between `Sleep onset time` and `Final wake time`.
@@ -155,8 +160,8 @@ The results are usuallly slightly, but can be very, different for Cambridge Neur
    of sleep parameters in sleep-disordered patients." Sleep Medicine
    2001; 2:389-96.
 
- - te Lindert BHW, Van Someren EJW. "Sleep estimates using microelectro-
-   mechanical systems (MEMS)." SLEEP 2013;36(5):781-789
+ - te Lindert BHW, Van Someren EJW. "Sleep estimates using microelectromechanical 
+   systems (MEMS)." SLEEP 2013; 36(5):781-789
 
 
 ## Contributions
