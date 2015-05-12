@@ -22,7 +22,7 @@ function varargout = sleep_consensus_diary(varargin)
 
 % Edit the above text to modify the response to help sleep_consensus_diary
 
-% Last Modified by GUIDE v2.5 14-Feb-2014 13:04:57
+% Last Modified by GUIDE v2.5 12-May-2015 08:15:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -122,7 +122,7 @@ function pushbutton_add_Callback(hObject, eventdata, handles)
     
     % add empty columns
     for i = 1:days
-        data{size(data,1)+i, 1} = '';
+        data{size(data,1)+1, 1} = '';
     end
     
     % update UI table
@@ -217,3 +217,15 @@ switch choice
         sleep_consensus_diary()
     case 'No'
 end
+
+
+% --- Executes when entered data in editable cell(s) in uitable_scd.
+function uitable_scd_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to uitable_scd (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
