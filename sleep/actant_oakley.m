@@ -340,26 +340,26 @@ for day = 1:days
     % The time the subject gets into bed, as filled out in the sleep
     % consensus diary and passed to this function in args2
     %CSDInBedTime = datenum(args2{day, 2})
-    CSDInBedTime = dateconversion(args2{day, 1}, args2{day, 2});
+    CSDInBedTime = dateconversion(args2{day, 1}, args2{day, 2}, 'inbed');
   
     % CSD: Lights off time/trying to fall asleep
     % The time the subject switches off the lights or starts to try
     % to fall asleep, as filled out in the sleep consensus diary, 
     % and passed to this function in args2
     %CSDLightsOffTime = datenum(args2{day, 3})
-    CSDLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3});
+    CSDLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3}, 'inbed');
     
     % CSD: Final wake time
     % The time the subject woke up, as filled out in the sleep consensus
     % diary and passed to this function in args2
     %CSDFinalWakeTime = datenum(args2{day, 7})
-    CSDFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}); 
+    CSDFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}, 'outofbed'); 
     
     % CSD: Out of bed time
     % The time the subject got out of bed as filled out in the sleep consensus
     % diary and passed to this function in args2
     %CSDOutOfBedTime = datenum(args2{day, 8})
-    CSDOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8});
+    CSDOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8}, 'outofbed');
     
     %%% NOTE: score is used instead of tsScore, because tsScore only contains 
     %%% data between 'CSDLightsOff' and 'CSDFinalWakeTime' 
