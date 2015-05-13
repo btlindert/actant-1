@@ -3,7 +3,7 @@ function [ts, vals] = actant_oakley(act, args1, args2)
 % parameters
 %
 % Arguments:
-%   data  - Input data timeseries (can be ACCZ or ACT)
+%   act   - Input data timeseries (can be ACCZ or ACT)
 %   args1 - {5 x 1} Cell array of algorithm arguments
 %           Algorithm -   'oakley'
 %           Method -      'i'    (immobility) - DEFAULT 
@@ -70,13 +70,13 @@ end
 
 %% THEN CHECK IF NONE OF THE ARGUMENTS IS EMPTY
 if isempty(act)
-    errordlg('Not enough input arguments', 'Error', 'modal')
+    errordlg('Not enough input arguments.', 'Error', 'modal')
     return
 elseif isempty(args1)
-    errordlg('No method selected', 'Error', 'modal')
+    errordlg('No method selected.', 'Error', 'modal')
     return
 elseif isempty(args2)
-    errordlg('Please provide Sleep Consensus Diary data', 'Error', 'modal')
+    errordlg('Please provide Consensus Sleep Diary data.', 'Error', 'modal')
     return
 end
 
@@ -119,7 +119,7 @@ else
 end
 
 if nargin == 1
-    errordlg('No algorithm and SCD data available!', 'Error', 'modal');
+    errordlg('No algorithm and CSD data available!', 'Error', 'modal');
     return;
 elseif nargin == 2
     errordlg('Please fill out Sleep Consensus Diary!', 'Error', 'modal');
@@ -130,10 +130,10 @@ end
 days = size(args2, 1);
 vals = cell(19, days);
 
-vals{1, 1}  = 'SCD: In bed time';
-vals{2, 1}  = 'SCD: Lights off time';
-vals{3, 1}  = 'SCD: Wake time';
-vals{4, 1}  = 'SCD: Out of bed time';
+vals{1, 1}  = 'CSD: In bed time';
+vals{2, 1}  = 'CSD: Lights off time';
+vals{3, 1}  = 'CSD: Wake time';
+vals{4, 1}  = 'CSD: Out of bed time';
 vals{5, 1}  = 'Time in bed (min)';
 vals{6, 1}  = 'Sleep onset time'; 
 vals{7, 1}  = 'Sleep onset latency (min)';
@@ -236,9 +236,9 @@ for day = 1:days
     
     idx = day+1;
     
-    % extract the correct date and time from the SCD 
-    startTime = dateconversion(args2{day, 1}, args2{day, 3});
-    endTime = dateconversion(args2{day, 1}, args2{day, 7});
+    % extract the correct date and time from the CSD 
+    startTime = dateconversion(args2{day, 1}, args2{day, 3}, 'inbed');
+    endTime = dateconversion(args2{day, 1}, args2{day, 7}, 'outofbed');
     
     % get data from COUNTS and WAKE
     % only one will be used in either algorithm (i or sw), but both are 
@@ -339,34 +339,34 @@ for day = 1:days
     % CSD: In bed time
     % The time the subject gets into bed, as filled out in the sleep
     % consensus diary and passed to this function in args2
-    %scdInBedTime = datenum(args2{day, 2})
-    scdInBedTime = dateconversion(args2{day, 1}, args2{day, 2});
+    %CSDInBedTime = datenum(args2{day, 2})
+    CSDInBedTime = dateconversion(args2{day, 1}, args2{day, 2});
   
     % CSD: Lights off time/trying to fall asleep
     % The time the subject switches off the lights or starts to try
     % to fall asleep, as filled out in the sleep consensus diary, 
     % and passed to this function in args2
-    %scdLightsOffTime = datenum(args2{day, 3})
-    scdLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3});
+    %CSDLightsOffTime = datenum(args2{day, 3})
+    CSDLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3});
     
     % CSD: Final wake time
     % The time the subject woke up, as filled out in the sleep consensus
     % diary and passed to this function in args2
-    %scdFinalWakeTime = datenum(args2{day, 7})
-    scdFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}); 
+    %CSDFinalWakeTime = datenum(args2{day, 7})
+    CSDFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}); 
     
     % CSD: Out of bed time
     % The time the subject got out of bed as filled out in the sleep consensus
     % diary and passed to this function in args2
-    %scdOutOfBedTime = datenum(args2{day, 8})
-    scdOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8});
+    %CSDOutOfBedTime = datenum(args2{day, 8})
+    CSDOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8});
     
     %%% NOTE: score is used instead of tsScore, because tsScore only contains 
-    %%% data between 'scdLightsOff' and 'scdFinalWakeTime' 
+    %%% data between 'CSDLightsOff' and 'CSDFinalWakeTime' 
     
     % Time in bed
     % Time (in minutes) between 'In bed time' and 'Out of bed time' 
-    ts = getsampleusingtime(score, scdInBedTime, scdOutOfBedTime);
+    ts = getsampleusingtime(score, CSDInBedTime, CSDOutOfBedTime);
     timeInBed = numel(ts.Data)*(sampling/60);
 
     % Sleep onset time
@@ -377,13 +377,13 @@ for day = 1:days
     % Sleep onset latency
     % Time it took the subject to fall asleep
     % Time (in minutes) between 'Lights off time' and 'Sleep onset time' 
-    ts = getsampleusingtime(score, scdLightsOffTime, sleepOnsetTime);
+    ts = getsampleusingtime(score, CSDLightsOffTime, sleepOnsetTime);
     sleepOnsetLatency = numel(ts.Data(1:end-1))*(sampling/60);
     
     % Final wake time
     % Time the subject woke up in the morning as calculated by the
     % algorithm, if SNOOZE=ON.
-    % If SNOOZE=OFF, time is equal to scdFinalWakeTime.
+    % If SNOOZE=OFF, time is equal to CSDFinalWakeTime.
     ts = getsampleusingtime(score, tsScore.Time(idx_fwt));
     finalWakeTime = ts.Time(1);
     
@@ -395,13 +395,13 @@ for day = 1:days
     % Snooze time 1
     % Time between the calculated 'Final wake time' and 'Wake time' 
     % as reported in the Sleep Consensus Diary 
-    ts = getsampleusingtime(score, finalWakeTime, scdFinalWakeTime);
+    ts = getsampleusingtime(score, finalWakeTime, CSDFinalWakeTime);
     snoozeTime1 = numel(ts.Data-1)*(sampling/60);
     
     % Snooze time 2
     % Time between the calculated 'Final wake time' and 'Out of bed time' 
     % as reported in the Sleep Consensus Diary
-    ts = getsampleusingtime(score, finalWakeTime, scdOutOfBedTime);
+    ts = getsampleusingtime(score, finalWakeTime, CSDOutOfBedTime);
     snoozeTime2 = numel(ts.Data-1)*(sampling/60);
     
     % Wake after sleep onset
@@ -468,10 +468,10 @@ for day = 1:days
     immobileTime = (sum(ts.Data == 0))*(sampling/60);
     
     % set calculated sleep parameters to vals{}
-    vals{1, idx}  = datestr(scdInBedTime, 'dd-mmm-yy HH:MM:SS');
-    vals{2, idx}  = datestr(scdLightsOffTime, 'dd-mmm-yy HH:MM:SS');
-    vals{3, idx}  = datestr(scdFinalWakeTime, 'dd-mmm-yy HH:MM:SS');
-    vals{4, idx}  = datestr(scdOutOfBedTime, 'dd-mmm-yy HH:MM:SS');
+    vals{1, idx}  = datestr(CSDInBedTime, 'dd-mmm-yy HH:MM:SS');
+    vals{2, idx}  = datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS');
+    vals{3, idx}  = datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS');
+    vals{4, idx}  = datestr(CSDOutOfBedTime, 'dd-mmm-yy HH:MM:SS');
     vals{5, idx}  = timeInBed;
     vals{6, idx}  = datestr(sleepOnsetTime, 'dd-mmm-yy HH:MM:SS'); 
     vals{7, idx}  = sleepOnsetLatency;
@@ -497,12 +497,12 @@ for day = 1:days
              'Final wake time',...
              'Wake time',...
              'Out of bed time'};
-    times =  {datestr(scdInBedTime    , 'dd-mmm-yy HH:MM:SS'),...
-              datestr(scdLightsOffTime, 'dd-mmm-yy HH:MM:SS'),...
+    times =  {datestr(CSDInBedTime    , 'dd-mmm-yy HH:MM:SS'),...
+              datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS'),...
               datestr(sleepOnsetTime  , 'dd-mmm-yy HH:MM:SS'),...
               datestr(finalWakeTime   , 'dd-mmm-yy HH:MM:SS') ,...
-              datestr(scdFinalWakeTime, 'dd-mmm-yy HH:MM:SS'),...
-              datestr(scdOutOfBedTime , 'dd-mmm-yy HH:MM:SS')};
+              datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS'),...
+              datestr(CSDOutOfBedTime , 'dd-mmm-yy HH:MM:SS')};
            
     counts = addevent(counts, names, times);
 end
@@ -588,10 +588,9 @@ act.TimeInfo.Units = 'seconds';
 % make sure the TimeInfo.Units of ts1 has already been set to seconds 
 act = set(act, 'Time', timeNum);
 
-
 end
 
-function date = dateconversion(date, time)
+function date = dateconversion(date, time, option)
 
 time = num2str(time);
 MM = str2double(time(end-1:end));
@@ -606,15 +605,25 @@ date = datevec(date, 'dd-mm-yy');
         MM = 0;
     end
 
-    if HH <= 15
-        % participant went to bed after 00:00, so the date is equal to the
-        % morning date as filled out in the SCD
+    if strcmpi(option, 'inbed')
+        % If the time input is related to the time going to bed, the date
+        % will be corrected depending on the time. I.e. is hours < 24:00
+        % then it will be the preceding date.
+        if HH <= 15
+            % participant went to bed after 00:00, so the date is equal to the
+            % morning date as filled out in the CSD
+            date = [date(1:3), HH, MM, 00];
+            date = datenum(date);
+        else
+           % bed time is before 00:00 and 1 day is subtracted from the morning date 
+            t = [date(1:3), HH, MM, 00];
+            date = addtodate(datenum(t), -1, 'day');
+        end
+    elseif strcmpi(option, 'outofbed')
+        % ...however, if the time is related to the out of bed time, than
+        % the date is not modified.
         date = [date(1:3), HH, MM, 00];
         date = datenum(date);
-    else
-       % bed time is before 00:00 and 1 day is subtracted from the morning date 
-        t = [date(1:3), HH, MM, 00];
-        date = addtodate(datenum(t), -1, 'day');
     end
     
 end
