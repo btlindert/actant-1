@@ -6,11 +6,12 @@ The results below are an example of how similar the results from `actant` are co
 This can be accomplished in 2 ways. Either, the sleep diary of the participant is used to generate manual `Rest periods` in `Actiware` and the sleep diary in `actant`. Or the automatically estimated rest periods of `Actiware` are used as
 input to the sleep diary in `actant`. For this example I randomly opted for the latter.
 
-Below are variables calculated by `actant` (top of table) and `Respironics Actiware 6.0.4` (bottom of table). Only variables that are calculated by both software packages are shown.  
-In `Actiware` the variables of interest are spread out across the `Rest`, `Sleep` and `Clinicians Report` tabs in the `Statistics table`. 
+Below are variables calculated by `actant` and `Respironics Actiware 6.0.4`. Only variables that are calculated by both software packages are shown.  
+In `Actiware` the variables of interest are spread out across the `Rest` (R), `Sleep` (S) and `Clinicians Report` (CR) tabs in the `Statistics table`. 
 
- 
-| CSD: Lights off time | CSD: Wake time     | Time in bed | Sleep onset time   | Sleep onset latency     | Final wake time    | Assumed sleep time | Wake after sleep onset | Actual sleep time | Sleep efficiency 2 | Number of wake bouts   |
+## Actant
+
+| CSD: Lights off time | CSD: Wake time     | Time in bed (min) | Sleep onset time   | Sleep onset latency (min)    | Final wake time    | Assumed sleep time (min) | Wake after sleep onset (min)| Actual sleep time (min) | Sleep efficiency 2 (%) | Number of wake bouts   |
 |:--------------------:|:------------------:|:-----------:|:------------------:|:-----------------------:|:------------------:|:------------------:|:----------------------:|:-----------------:|:------------------:|:----------------------:|
 | 03-Mar-10 22:52:00   | 04-Mar-10 07:58:00	| 546	      | 03-Mar-10 22:57:00 | 5	                     | 04-Mar-10 07:58:00 |	541	               | 35	                    | 506	            | 92.67	             | 20                     |
 | 04-Mar-10 23:41:00   | 05-Mar-10 05:58:00	| 377	      | 04-Mar-10 23:46:00 | 5	                     | 05-Mar-10 05:49:00 |	363	               | 30	                    | 334           	| 88.59	             | 18                     |
@@ -21,9 +22,10 @@ In `Actiware` the variables of interest are spread out across the `Rest`, `Sleep
 | 09-Mar-10 21:48:00   | 10-Mar-10 06:02:00	| 494	      | 09-Mar-10 21:48:00 | 0	                     | 10-Mar-10 06:00:00 |	492	               | 50		                | 442	            | 89.47	             | 27                     |
 | 10-Mar-10 22:04:00   | 11-Mar-10 09:05:00	| 661	      | 10-Mar-10 22:05:00 | 1	                     | 11-Mar-10 09:05:00 |	660		           | 72		                | 588	            | 88.96	             | 39                     |
 | 11-Mar-10 21:47:00   | 12-Mar-10 08:23:00	| 636	      | 11-Mar-10 21:48:00 | 1	                     | 12-Mar-10 08:23:00 |	635		           | 3		                | 632	            | 99.37	             | 1                      |
-|:--------------------:|:------------------:|:-----------:|:------------------:|:-----------------------:|:------------------:|:------------------:|:----------------------:|:-----------------:|:------------------:|:----------------------:|
-| TAB - Rest           | TAB - Rest         | TAB - Rest  | TAB - Sleep        | TAB - Clinicians report | TAB - Sleep        | TAB - Sleep        | TAB - Sleep            | TAB - Sleep       | TAB - Sleep        | TAB - Clinicians Report|
-| Start date & time    | End date & time    | Duration    | Start date & time  | Onset latency           | End date & time    | Duration           | Wake time              | Sleep time        | Efficiency         | #Awakenings            |								
+
+## Actiware
+
+| Start date & time (R)    | End date & time (R)    | Duration (R)    | Start date & time (S) | Onset latency (CR)          | End date & time (S)    | Duration (S)          | Wake time (S)             | Sleep time (S)       | Efficiency (S)         | #Awakenings (CR)          |								
 |:--------------------:|:------------------:|:-----------:|:------------------:|:-----------------------:|:------------------:|:------------------:|:----------------------:|:-----------------:|:------------------:|:----------------------:|							
 | 03-Mar-10 22:52:00   | 04-Mar-10 07:58:00	| 546	      | 03-Mar-10 22:57:00 | 5	                     | 04-Mar-10 07:57:00 |	540	               | 35		                | 505	            | 92.49	             | 20                     |
 | 04-Mar-10 23:41:00   | 05-Mar-10 05:58:00	| 377	      | 04-Mar-10 23:46:00 | 5	                     | 05-Mar-10 05:49:00 |	363		           | 29		                | 334	            | 88.59	             | 18                     |
