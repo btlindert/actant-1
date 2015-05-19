@@ -143,7 +143,7 @@ Total duration of epochs with no activity (=0) in the `Assumed sleep time` perio
 
 
 ## How do the calculated variables compare to other software?
-The results are identical (or 1 epoch off) to recent versions of Respironics' Actiware. You can verify it yourself by analysing a `.awd` counts file using the Actiware software and these scripts and using the the same sleep diary.
+The results are [nearly identical](comparison.md) (~ 1 epoch off) to recent versions of Respironics' Actiware. You can verify it yourself by analysing a `.awd` counts file using the Actiware software and these scripts and using the the same sleep diary.
 Actiware has an automatic feature that automatically selects the major rest periods in the absence of sleep diaries. This is extremely handy, but I haven't been able to reproduce their results. If you have suggentions on how to estimate these, please let me know.
 
 The results are usuallly slightly, but can be very, different for Cambridge Neurotechnology Ltd's Sleep Analysis software. First of all, it has no snooze option. But it also seems that they accept 2 instead of 1 mobile epochs in a 10 min window during the estimation of sleep onset, which can lead to very different results. 
