@@ -11,7 +11,6 @@ In `Actiware` the variables of interest are spread out across the `Rest`, `Sleep
 
  
 | CSD: Lights off time | CSD: Wake time     | Time in bed | Sleep onset time   | Sleep onset latency     | Final wake time    | Assumed sleep time | Wake after sleep onset | Actual sleep time | Sleep efficiency 2 | Number of wake bouts   |
-|                      |                    | (min)       |                    | (min)                   |                    | (min)              | (min)                  | (min)             | (%)                |                        |
 |:--------------------:|:------------------:|:-----------:|:------------------:|:-----------------------:|:------------------:|:------------------:|:----------------------:|:-----------------:|:------------------:|:----------------------:|
 | 03-Mar-10 22:52:00   | 04-Mar-10 07:58:00	| 546	      | 03-Mar-10 22:57:00 | 5	                     | 04-Mar-10 07:58:00 |	541	               | 35	                    | 506	            | 92.67	             | 20                     |
 | 04-Mar-10 23:41:00   | 05-Mar-10 05:58:00	| 377	      | 04-Mar-10 23:46:00 | 5	                     | 05-Mar-10 05:49:00 |	363	               | 30	                    | 334           	| 88.59	             | 18                     |
