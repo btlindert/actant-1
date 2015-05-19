@@ -4,7 +4,7 @@
 % i.e. for mat:
 %   - xxxx_0001_actigraphy_week.mat
 % and for the sleep diary:
-%   - xxxx_0001_diray_week.csv
+%   - xxxx_0001_diary_week.csv
 
 
 % Specify folders.
