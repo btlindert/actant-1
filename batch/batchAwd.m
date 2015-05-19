@@ -21,6 +21,9 @@ settings{3,1} = 'Sensitivity'; settings{3, 2} = 'm';
 settings{4,1} = 'Snooze';      settings{4, 2} = 'on';
 settings{5,1} = 'Time window'; settings{5, 2} = 10; 
 
+% Specify subjects.
+nSubjects = 1:10;
+
 for iSubject = nSubjects
     
     % Load only the acc_z variable from the mat file.
