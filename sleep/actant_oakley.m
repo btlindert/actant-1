@@ -370,8 +370,9 @@ for day = 1:days
     
     % Sleep onset time
     % Time the subject fell asleep as calculated by the algorithm
-    ts = getsampleusingtime(score, tsScore.Time(idx_sot));
-    sleepOnsetTime = ts.Time(1);
+    sleepOnsetTime = datevec(tsScore.Time(idx_sot));
+    sleepOnsetTime(6) = floor(sleepOnsetTime(6)); % set FFF to zero.
+    sleepOnsetTime = datenum(sleepOnsetTime);
     
     % Sleep onset latency
     % Time it took the subject to fall asleep
@@ -382,7 +383,9 @@ for day = 1:days
     % Time the subject woke up in the morning as calculated by the
     % algorithm, if SNOOZE=ON.
     % If SNOOZE=OFF, time is equal to CSDFinalWakeTime.
-    finalWakeTime = tsScore.Time(idx_fwt);
+    finalWakeTime = datevec(tsScore.Time(idx_fwt));
+    finalWakeTime(6) = floor(finalWakeTimeTime(6)); % set FFF to zero.
+    finalWakeTime = datenum(finalWakeTime);
     
     % Assumed sleep time
     % Time between 'Sleep onset time' and 'Final wake time'
@@ -391,15 +394,11 @@ for day = 1:days
     % Snooze time 1
     % Time between the calculated 'Final wake time' and 'Wake time' 
     % as reported in the Sleep Consensus Diary 
-   %ts = getsampleusingtime(score, finalWakeTime, CSDFinalWakeTime);
-   %snoozeTime1 = numel(ts.Data-1)*(sampling/60);
     snoozeTime1 = etime(datevec(CSDFinalWakeTime), datevec(finalWakeTime))./60;
     
     % Snooze time 2
     % Time between the calculated 'Final wake time' and 'Out of bed time' 
     % as reported in the Sleep Consensus Diary
-   %ts = getsampleusingtime(score, finalWakeTime, CSDOutOfBedTime);
-   %snoozeTime2 = numel(ts.Data-1)*(sampling/60);
     snoozeTime2 = etime(datevec(CSDOutOfBedTime), datevec(finalWakeTime))./60;
     
     % Wake after sleep onset
