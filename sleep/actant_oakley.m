@@ -384,7 +384,7 @@ for day = 1:days
     % algorithm, if SNOOZE=ON.
     % If SNOOZE=OFF, time is equal to CSDFinalWakeTime.
     finalWakeTime = datevec(tsScore.Time(idx_fwt));
-    finalWakeTime(6) = floor(finalWakeTimeTime(6)); % set FFF to zero.
+    finalWakeTime(6) = floor(finalWakeTime(6)); % set FFF to zero.
     finalWakeTime = datenum(finalWakeTime);
     
     % Assumed sleep time
