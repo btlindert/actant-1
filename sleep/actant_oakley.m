@@ -122,13 +122,13 @@ if nargin == 1
     errordlg('No algorithm and CSD data available!', 'Error', 'modal');
     return;
 elseif nargin == 2
-    errordlg('Please fill out Sleep Consensus Diary!', 'Error', 'modal');
+    errordlg('Please fill out Consensus Sleep Diary!', 'Error', 'modal');
     return;
 end
 
 %% INITIALIZE VARIABLES 
 days = size(args2, 1);
-vals = cell(19, days);
+vals = cell(19, 1);
 
 vals{1, 1}  = 'CSD: In bed time';
 vals{2, 1}  = 'CSD: Lights off time';
@@ -151,7 +151,6 @@ vals{18, 1} = 'Number of sleep bouts';
 vals{19, 1} = 'Mean sleep bout time (min)';
 vals{20, 1} = 'Mobile time (min)';
 vals{21, 1} = 'Immobile time (min)';
-
 
 method      = args1{2,2};
 sensitivity = args1{3,2};
@@ -208,9 +207,6 @@ score = filter(coeff, 1, data);
 % shift data backwards to correct for filter shift
 score = [score(shift:end); zeros(shift-1, 1)];
 
-%wake = NaN(size(score));
-%wake(score > thres) = 1;
-
 wake = score > thres;
 % score epochs as MOBILE if counts >= 1
 % An epoch is scored as MOBILE if the number of 
@@ -234,8 +230,6 @@ wake.DataInfo.Unit = 'binary';
 
 for day = 1:days
     
-    idx = day+1;
-    
     % extract the correct date and time from the CSD 
     startTime = dateconversion(args2{day, 1}, args2{day, 3}, 'inbed');
     endTime = dateconversion(args2{day, 1}, args2{day, 7}, 'outofbed');
@@ -251,257 +245,264 @@ for day = 1:days
     tsWake = getsampleusingtime(wake, startTime, endTime);
     dataWake = tsWake.Data;
     
-    % immobility algorithm
-    if strcmpi(method, 'i'); 
-        % find first period of 10 minutes of immobility and allow 1 epoch of
-        % activity
-        % threshold for activity depends on the number of 15s intervals in the
-        % epoch time: e.g. 15 epoch/ 15 s interval => threshold = 1
-        % 30 s epoch/ 15 s interval => threshold = 2
-        % 1 min epoch / 15 s interval => threshold = 4
-   
-        % size of sliding window
-        window = ratio*timewindow; % number of epoch in 10 minute window
+    if ~isempty(dataCounts)
+            
+        idx = day+1;
         
-        % sleep onset time
-        for i = 1:numel(dataCounts)
-            % calulate number of mobile epochs
-            n = dataCounts(i:i+window-1) >= sampling/15;
-            if sum(n) <= 1; % allow for max 1 epoch of mobility
-                break 
-            else
-            end
-        end
-        
-        % calculated sleep onset time
-        idx_sot = i;
-        
-        if strcmpi(snooze, 'on');
-            % final wake time
-            for j = numel(dataCounts):-1:1
-                % calculate number of mobile epochs
-                n = dataCounts(j-window+1:j) >= sampling/15;
-                if sum(n) <= 1; % allow for max 1 epoch of mobility %%% chneg to ==1
+        % immobility algorithm
+        if strcmpi(method, 'i'); 
+            % find first period of 10 minutes of immobility and allow 1 epoch of
+            % activity
+            % threshold for activity depends on the number of 15s intervals in the
+            % epoch time: e.g. 15 epoch/ 15 s interval => threshold = 1
+            % 30 s epoch/ 15 s interval => threshold = 2
+            % 1 min epoch / 15 s interval => threshold = 4
+
+            % size of sliding window
+            window = ratio*timewindow; % number of epoch in 10 minute window
+
+            % sleep onset time
+            for i = 1:numel(dataCounts)
+                % calulate number of mobile epochs
+                n = dataCounts(i:i+window-1) >= sampling/15;
+                if sum(n) <= 1; % allow for max 1 epoch of mobility
                     break 
                 else
                 end
             end
 
-            % calculated final wake time
-            idx_fwt = j;
-        else
-            idx_fwt = numel(dataCounts);
-        end
-        
-    % sleep/wake algorithm
-    elseif strcmpi(method, 'sw')
-        
-        % sleep/wake algorithm: sleep onset estimation 
-        % find first period of 5 minutes of consecutive sleep epochs
+            % calculated sleep onset time
+            idx_sot = i;
 
-        % size of sliding window
-        window = ratio*5;
-        
-        % sleep onset time
-        for i = 1:numel(dataWake)
-            n = dataWake(i:i+window-1) == 0;
-            if sum(n) == window; % i.e. all epochs are sleep
-                break 
+            if strcmpi(snooze, 'on');
+                % final wake time
+                for j = numel(dataCounts):-1:1
+                    % calculate number of mobile epochs
+                    n = dataCounts(j-window+1:j) >= sampling/15;
+                    if sum(n) <= 1; % allow for max 1 epoch of mobility 
+                        break 
+                    else
+                    end
+                end
+
+                % calculated final wake time
+                idx_fwt = j;
             else
+                idx_fwt = numel(dataCounts);
             end
-        end
-        
-        % calculated sleep onset time
-        idx_sot = i;
-        
-        if strcmpi(snooze, 'on');
-            % final wake time
-            for j = numel(dataWake):-1:1
-                n = dataWake(j-window+1:j) == 0;
-                if sum(n) == window;
+
+        % sleep/wake algorithm
+        elseif strcmpi(method, 'sw')
+
+            % sleep/wake algorithm: sleep onset estimation 
+            % find first period of 5 minutes of consecutive sleep epochs
+
+            % size of sliding window
+            window = ratio*5;
+
+            % sleep onset time
+            for i = 1:numel(dataWake)
+                n = dataWake(i:i+window-1) == 0;
+                if sum(n) == window; % i.e. all epochs are sleep
                     break 
                 else
                 end
             end
 
-            % calculated final wake time
-            idx_fwt = j;
-        else
-            idx_fwt = numel(dataCounts);
-        end
-        
-    elseif strcmpi(method, 'None')       
-        idx_sot = 1;
-        idx_fwt = numel(dataCounts);
+            % calculated sleep onset time
+            idx_sot = i;
 
+            if strcmpi(snooze, 'on');
+                % final wake time
+                for j = numel(dataWake):-1:1
+                    n = dataWake(j-window+1:j) == 0;
+                    if sum(n) == window;
+                        break 
+                    else
+                    end
+                end
+
+                % calculated final wake time
+                idx_fwt = j;
+            else
+                idx_fwt = numel(dataCounts);
+            end
+
+        elseif strcmpi(method, 'None')       
+            idx_sot = 1;
+            idx_fwt = numel(dataCounts);
+
+        end
+
+        % CSD: In bed time
+        % The time the subject gets into bed, as filled out in the sleep
+        % consensus diary and passed to this function in args2
+        %CSDInBedTime = datenum(args2{day, 2})
+        CSDInBedTime = dateconversion(args2{day, 1}, args2{day, 2}, 'inbed');
+
+        % CSD: Lights off time/trying to fall asleep
+        % The time the subject switches off the lights or starts to try
+        % to fall asleep, as filled out in the sleep consensus diary, 
+        % and passed to this function in args2
+        %CSDLightsOffTime = datenum(args2{day, 3})
+        CSDLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3}, 'inbed');
+
+        % CSD: Final wake time
+        % The time the subject woke up, as filled out in the sleep consensus
+        % diary and passed to this function in args2
+        %CSDFinalWakeTime = datenum(args2{day, 7})
+        CSDFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}, 'outofbed'); 
+
+        % CSD: Out of bed time
+        % The time the subject got out of bed as filled out in the sleep consensus
+        % diary and passed to this function in args2
+        %CSDOutOfBedTime = datenum(args2{day, 8})
+        CSDOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8}, 'outofbed');
+
+        %%% NOTE: score is used instead of tsScore, because tsScore only contains 
+        %%% data between 'CSDLightsOff' and 'CSDFinalWakeTime' 
+
+        % Time in bed
+        % Time (in minutes) between 'In bed time' and 'Out of bed time' 
+        timeInBed = etime(datevec(CSDOutOfBedTime), datevec(CSDInBedTime))./60;
+
+        % Sleep onset time
+        % Time the subject fell asleep as calculated by the algorithm
+        sleepOnsetTime = datevec(tsScore.Time(idx_sot));
+        sleepOnsetTime(6) = floor(sleepOnsetTime(6)); % set FFF to zero.
+        sleepOnsetTime = datenum(sleepOnsetTime);
+
+        % Sleep onset latency
+        % Time it took the subject to fall asleep
+        % Time (in minutes) between 'Lights off time' and 'Sleep onset time' 
+        sleepOnsetLatency = etime(datevec(sleepOnsetTime), datevec(CSDLightsOffTime))./60;
+
+        % Final wake time
+        % Time the subject woke up in the morning as calculated by the
+        % algorithm, if SNOOZE=ON.
+        % If SNOOZE=OFF, time is equal to CSDFinalWakeTime.
+        finalWakeTime = datevec(tsScore.Time(idx_fwt));
+        finalWakeTime(6) = floor(finalWakeTime(6)); % set FFF to zero.
+        finalWakeTime = datenum(finalWakeTime);
+
+        % Assumed sleep time
+        % Time between 'Sleep onset time' and 'Final wake time'
+        assumedSleepTime = etime(datevec(finalWakeTime), datevec(sleepOnsetTime))./60;
+
+        % Snooze time 1
+        % Time between the calculated 'Final wake time' and 'Wake time' 
+        % as reported in the Sleep Consensus Diary 
+        snoozeTime1 = etime(datevec(CSDFinalWakeTime), datevec(finalWakeTime))./60;
+
+        % Snooze time 2
+        % Time between the calculated 'Final wake time' and 'Out of bed time' 
+        % as reported in the Sleep Consensus Diary
+        snoozeTime2 = etime(datevec(CSDOutOfBedTime), datevec(finalWakeTime))./60;
+
+        % Wake after sleep onset
+        % Number of epochs scored as WAKE between 'Sleep onset time' and 
+        % 'Final wake time' multiplied by the epoch length.    
+        ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
+        indices = (ts.Data(1:end-1) >= thres);
+        nwake = sum(indices);
+        wakeAfterSleepOnset = nwake*(sampling/60);
+
+        % Actual sleep time
+        % Number of epochs scored as SLEEP between 'Sleep onset time' and 
+        % 'Final wake time' multiplied by the epoch length.
+        ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
+        indices = (ts.Data(1:end-1) <= thres);
+        nsleep = sum(indices);
+        actualSleepTime = nsleep*(sampling/60);
+
+        % Analysis period
+        analysisPeriod = (numel(tsScore.Data)-1)*(sampling/60);
+
+        % Sleep efficiency 1
+        % 'Actual sleep time' divided by 'Analysis period' 
+        % (Final wake time - Sleep onset time) multiplied by 100.
+        sleepEfficiency1 = (actualSleepTime / analysisPeriod)*100;
+
+        % Sleep efficiency 2
+        % 'Actual sleep time' divided by 'Time in bed' multiplied by 100.
+        sleepEfficiency2 = (actualSleepTime / timeInBed)*100;
+
+        % Number of wake bouts
+        % Number of continuous blocks, one or more epochs in duration, with 
+        % each epoch of each block scored as WAKE between the 'Assumed sleep time'.
+        ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
+        indices = find(ts.Data > thres);
+        b = bouts(indices); 
+        numberOfWakeBouts = numel(b);
+
+        % Mean wake bout time
+        % 'Wake after sleep onset' divided by the 'Number of wake bouts'
+        meanWakeBoutTime = wakeAfterSleepOnset/numberOfWakeBouts;
+
+        % Number of sleep bouts
+        % Number of continuous blocks, one or more epochs in duration, with 
+        % each epoch of each block scored as SLEEP between the 'Assumed sleep time'.
+        indices = find(ts.Data <= thres);
+        b = bouts(indices); 
+        numberOfSleepBouts = numel(b);
+
+        % Mean sleep bout time
+        % 'Actual sleep time' divided by the 'Number of sleep bouts'
+        meanSleepBoutTime = actualSleepTime/numberOfSleepBouts;  
+
+        % Mobile time
+        % Total duration of epochs with activity (>0) in the 'Assumed sleep time' 
+        % period
+        ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
+        mobileTime = (sum(ts.Data > 0))*(sampling/60);
+
+        % Immobile time 
+        % Total duration of epochs with no activity (=0) in the 'Assumed sleep time' 
+        % period
+        ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
+        immobileTime = (sum(ts.Data == 0))*(sampling/60);
+
+        % set calculated sleep parameters to vals{}
+        vals{1, idx}  = datestr(CSDInBedTime, 'dd-mmm-yy HH:MM:SS');
+        vals{2, idx}  = datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS');
+        vals{3, idx}  = datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS');
+        vals{4, idx}  = datestr(CSDOutOfBedTime, 'dd-mmm-yy HH:MM:SS');
+        vals{5, idx}  = timeInBed;
+        vals{6, idx}  = datestr(sleepOnsetTime, 'dd-mmm-yy HH:MM:SS'); 
+        vals{7, idx}  = sleepOnsetLatency;
+        vals{8, idx}  = datestr(finalWakeTime, 'dd-mmm-yy HH:MM:SS');
+        vals{9, idx}  = assumedSleepTime;
+        vals{10, idx} = snoozeTime1;
+        vals{11, idx} = snoozeTime2;
+        vals{12, idx} = wakeAfterSleepOnset;
+        vals{13, idx} = actualSleepTime;
+        vals{14, idx} = sleepEfficiency1; 
+        vals{15, idx} = sleepEfficiency2; 
+        vals{16, idx} = numberOfWakeBouts;
+        vals{17, idx} = meanWakeBoutTime; 
+        vals{18, idx} = numberOfSleepBouts; 
+        vals{19, idx} = meanSleepBoutTime;
+        vals{20, idx} = mobileTime;
+        vals{21, idx} = immobileTime;
+
+        % finally, add sleep events (bedtime, waketime etc) to counts
+        names = {'In bed time',...
+                 'Lights off time',...
+                 'Sleep onset time',...
+                 'Final wake time',...
+                 'Wake time',...
+                 'Out of bed time'};
+        times =  {datestr(CSDInBedTime    , 'dd-mmm-yy HH:MM:SS'),...
+                  datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS'),...
+                  datestr(sleepOnsetTime  , 'dd-mmm-yy HH:MM:SS'),...
+                  datestr(finalWakeTime   , 'dd-mmm-yy HH:MM:SS') ,...
+                  datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS'),...
+                  datestr(CSDOutOfBedTime , 'dd-mmm-yy HH:MM:SS')};
+
+        counts = addevent(counts, names, times);
+    
     end
-
-    % CSD: In bed time
-    % The time the subject gets into bed, as filled out in the sleep
-    % consensus diary and passed to this function in args2
-    %CSDInBedTime = datenum(args2{day, 2})
-    CSDInBedTime = dateconversion(args2{day, 1}, args2{day, 2}, 'inbed');
-  
-    % CSD: Lights off time/trying to fall asleep
-    % The time the subject switches off the lights or starts to try
-    % to fall asleep, as filled out in the sleep consensus diary, 
-    % and passed to this function in args2
-    %CSDLightsOffTime = datenum(args2{day, 3})
-    CSDLightsOffTime = dateconversion(args2{day, 1}, args2{day, 3}, 'inbed');
     
-    % CSD: Final wake time
-    % The time the subject woke up, as filled out in the sleep consensus
-    % diary and passed to this function in args2
-    %CSDFinalWakeTime = datenum(args2{day, 7})
-    CSDFinalWakeTime = dateconversion(args2{day, 1}, args2{day, 7}, 'outofbed'); 
-    
-    % CSD: Out of bed time
-    % The time the subject got out of bed as filled out in the sleep consensus
-    % diary and passed to this function in args2
-    %CSDOutOfBedTime = datenum(args2{day, 8})
-    CSDOutOfBedTime = dateconversion(args2{day, 1}, args2{day, 8}, 'outofbed');
-    
-    %%% NOTE: score is used instead of tsScore, because tsScore only contains 
-    %%% data between 'CSDLightsOff' and 'CSDFinalWakeTime' 
-    
-    % Time in bed
-    % Time (in minutes) between 'In bed time' and 'Out of bed time' 
-    timeInBed = etime(datevec(CSDOutOfBedTime), datevec(CSDInBedTime))./60;
-    
-    % Sleep onset time
-    % Time the subject fell asleep as calculated by the algorithm
-    sleepOnsetTime = datevec(tsScore.Time(idx_sot));
-    sleepOnsetTime(6) = floor(sleepOnsetTime(6)); % set FFF to zero.
-    sleepOnsetTime = datenum(sleepOnsetTime);
-    
-    % Sleep onset latency
-    % Time it took the subject to fall asleep
-    % Time (in minutes) between 'Lights off time' and 'Sleep onset time' 
-    sleepOnsetLatency = etime(datevec(sleepOnsetTime), datevec(CSDLightsOffTime))./60;
-    
-    % Final wake time
-    % Time the subject woke up in the morning as calculated by the
-    % algorithm, if SNOOZE=ON.
-    % If SNOOZE=OFF, time is equal to CSDFinalWakeTime.
-    finalWakeTime = datevec(tsScore.Time(idx_fwt));
-    finalWakeTime(6) = floor(finalWakeTime(6)); % set FFF to zero.
-    finalWakeTime = datenum(finalWakeTime);
-    
-    % Assumed sleep time
-    % Time between 'Sleep onset time' and 'Final wake time'
-    assumedSleepTime = etime(datevec(finalWakeTime), datevec(sleepOnsetTime))./60;
-    
-    % Snooze time 1
-    % Time between the calculated 'Final wake time' and 'Wake time' 
-    % as reported in the Sleep Consensus Diary 
-    snoozeTime1 = etime(datevec(CSDFinalWakeTime), datevec(finalWakeTime))./60;
-    
-    % Snooze time 2
-    % Time between the calculated 'Final wake time' and 'Out of bed time' 
-    % as reported in the Sleep Consensus Diary
-    snoozeTime2 = etime(datevec(CSDOutOfBedTime), datevec(finalWakeTime))./60;
-    
-    % Wake after sleep onset
-    % Number of epochs scored as WAKE between 'Sleep onset time' and 
-    % 'Final wake time' multiplied by the epoch length.    
-    ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
-    indices = (ts.Data(1:end-1) >= thres);
-    nwake = sum(indices);
-    wakeAfterSleepOnset = nwake*(sampling/60);
-    
-    % Actual sleep time
-    % Number of epochs scored as SLEEP between 'Sleep onset time' and 
-    % 'Final wake time' multiplied by the epoch length.
-    ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
-    indices = (ts.Data(1:end-1) <= thres);
-    nsleep = sum(indices);
-    actualSleepTime = nsleep*(sampling/60);
-
-    % Analysis period
-    analysisPeriod = (numel(tsScore.Data)-1)*(sampling/60);
-   
-    % Sleep efficiency 1
-    % 'Actual sleep time' divided by 'Analysis period' 
-    % (Final wake time - Sleep onset time) multiplied by 100.
-    sleepEfficiency1 = (actualSleepTime / analysisPeriod)*100;
-    
-    % Sleep efficiency 2
-    % 'Actual sleep time' divided by 'Time in bed' multiplied by 100.
-    sleepEfficiency2 = (actualSleepTime / timeInBed)*100;
-    
-    % Number of wake bouts
-    % Number of continuous blocks, one or more epochs in duration, with 
-    % each epoch of each block scored as WAKE between the 'Assumed sleep time'.
-    ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
-    indices = find(ts.Data > thres);
-    b = bouts(indices); 
-    numberOfWakeBouts = numel(b);
-
-    % Mean wake bout time
-    % 'Wake after sleep onset' divided by the 'Number of wake bouts'
-    meanWakeBoutTime = wakeAfterSleepOnset/numberOfWakeBouts;
-
-    % Number of sleep bouts
-    % Number of continuous blocks, one or more epochs in duration, with 
-    % each epoch of each block scored as SLEEP between the 'Assumed sleep time'.
-    indices = find(ts.Data <= thres);
-    b = bouts(indices); 
-    numberOfSleepBouts = numel(b);
-    
-    % Mean sleep bout time
-    % 'Actual sleep time' divided by the 'Number of sleep bouts'
-    meanSleepBoutTime = actualSleepTime/numberOfSleepBouts;  
-    
-    % Mobile time
-    % Total duration of epochs with activity (>0) in the 'Assumed sleep time' 
-    % period
-    ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
-    mobileTime = (sum(ts.Data > 0))*(sampling/60);
-
-    % Immobile time 
-    % Total duration of epochs with no activity (=0) in the 'Assumed sleep time' 
-    % period
-    ts = getsampleusingtime(score, sleepOnsetTime, finalWakeTime);
-    immobileTime = (sum(ts.Data == 0))*(sampling/60);
-    
-    % set calculated sleep parameters to vals{}
-    vals{1, idx}  = datestr(CSDInBedTime, 'dd-mmm-yy HH:MM:SS');
-    vals{2, idx}  = datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS');
-    vals{3, idx}  = datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS');
-    vals{4, idx}  = datestr(CSDOutOfBedTime, 'dd-mmm-yy HH:MM:SS');
-    vals{5, idx}  = timeInBed;
-    vals{6, idx}  = datestr(sleepOnsetTime, 'dd-mmm-yy HH:MM:SS'); 
-    vals{7, idx}  = sleepOnsetLatency;
-    vals{8, idx}  = datestr(finalWakeTime, 'dd-mmm-yy HH:MM:SS');
-    vals{9, idx}  = assumedSleepTime;
-    vals{10, idx} = snoozeTime1;
-    vals{11, idx} = snoozeTime2;
-    vals{12, idx} = wakeAfterSleepOnset;
-    vals{13, idx} = actualSleepTime;
-    vals{14, idx} = sleepEfficiency1; 
-    vals{15, idx} = sleepEfficiency2; 
-    vals{16, idx} = numberOfWakeBouts;
-    vals{17, idx} = meanWakeBoutTime; 
-    vals{18, idx} = numberOfSleepBouts; 
-    vals{19, idx} = meanSleepBoutTime;
-    vals{20, idx} = mobileTime;
-    vals{21, idx} = immobileTime;
-    
-    % finally, add sleep events (bedtime, waketime etc) to counts
-    names = {'In bed time',...
-             'Lights off time',...
-             'Sleep onset time',...
-             'Final wake time',...
-             'Wake time',...
-             'Out of bed time'};
-    times =  {datestr(CSDInBedTime    , 'dd-mmm-yy HH:MM:SS'),...
-              datestr(CSDLightsOffTime, 'dd-mmm-yy HH:MM:SS'),...
-              datestr(sleepOnsetTime  , 'dd-mmm-yy HH:MM:SS'),...
-              datestr(finalWakeTime   , 'dd-mmm-yy HH:MM:SS') ,...
-              datestr(CSDFinalWakeTime, 'dd-mmm-yy HH:MM:SS'),...
-              datestr(CSDOutOfBedTime , 'dd-mmm-yy HH:MM:SS')};
-           
-    counts = addevent(counts, names, times);
 end
 
 % define output timeseries
