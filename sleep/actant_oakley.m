@@ -7,7 +7,7 @@ function [ts, vals] = actant_oakley(act, args1, args2)
 %   args1 - {5 x 1} Cell array of algorithm arguments
 %           Algorithm -   'oakley'
 %           Method -      'i'    (immobility) - DEFAULT 
-%                         's'    (sleep/wake)
+%                         'sw'    (sleep/wake)
 %                         'none' (no estimation)
 %           Sensitivity - 'l'    (low)
 %                         'm'    (medium)     - DEFAULT
