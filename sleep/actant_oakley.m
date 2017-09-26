@@ -158,13 +158,18 @@ snooze      = args1{4,2};
 timewindow  = args1{5,2};
 
 %% GET THRESHOLD
+% Input can be either a character l/m/h sensitivity or a numeric threshold
 % convert sensitivity to threshold
-if strcmpi(sensitivity, 'l')
-    thres = 80;
-elseif strcmpi(sensitivity, 'm')
-    thres = 40;
-elseif strcmpi(sensitivity, 'h')
-    thres = 20;
+if ischar(sensitivity)
+    if strcmpi(sensitivity, 'l')
+        thres = 80;
+    elseif strcmpi(sensitivity, 'm')
+        thres = 40;
+    elseif strcmpi(sensitivity, 'h')
+        thres = 20;
+    end
+elseif isnumeric(sensitivity)
+    thres = sensitivity;
 end
 
 %% rescore data based on sensitivity algorithm
