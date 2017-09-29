@@ -303,7 +303,7 @@ for day = 1:days
             % find first period of 5 minutes of consecutive sleep epochs
 
             % size of sliding window
-            window = ratio*5;
+            window = ratio*timewindow;
 
             % sleep onset time
             for i = 1:numel(dataWake)
