@@ -267,7 +267,7 @@ for day = 1:days
             window = ratio*timewindow; % number of epoch in 10 minute window
 
             % sleep onset time
-            for i = 1:numel(dataCounts)
+            for i = 1:(numel(dataCounts)-(window-1))
                 % calulate number of mobile epochs
                 n = dataCounts(i:i+window-1) >= sampling/15;
                 if sum(n) <= 1; % allow for max 1 epoch of mobility
@@ -281,7 +281,7 @@ for day = 1:days
 
             if strcmpi(snooze, 'on');
                 % final wake time
-                for j = numel(dataCounts):-1:1
+                for j = numel(dataCounts):-1:(window+1)
                     % calculate number of mobile epochs
                     n = dataCounts(j-window+1:j) >= sampling/15;
                     if sum(n) <= 1; % allow for max 1 epoch of mobility 
@@ -306,7 +306,7 @@ for day = 1:days
             window = ratio*timewindow;
 
             % sleep onset time
-            for i = 1:numel(dataWake)
+            for i = 1:(numel(dataWake)-(window-1))
                 n = dataWake(i:i+window-1) == 0;
                 if sum(n) == window; % i.e. all epochs are sleep
                     break 
@@ -319,7 +319,7 @@ for day = 1:days
 
             if strcmpi(snooze, 'on');
                 % final wake time
-                for j = numel(dataWake):-1:1
+                for j = numel(dataWake):-1:(window+1)
                     n = dataWake(j-window+1:j) == 0;
                     if sum(n) == window;
                         break 
