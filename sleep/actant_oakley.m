@@ -596,10 +596,15 @@ end
 function date = dateconversion(date, time, option)
 
 time = num2str(time);
-MM = str2double(time(end-1:end));
-HH = str2double(time(1:end-2));
+if length(time) == 1
+    MM = str2double(time(end:end));
+    HH = 0;
+else
+    MM = str2double(time(end-1:end));
+    HH = str2double(time(1:end-2));
+end
 date = datevec(date, 'dd-mm-yy');
-    
+
     if isempty(HH)
         HH = 0;
     end
