@@ -128,7 +128,7 @@ end
 
 %% INITIALIZE VARIABLES 
 days = size(args2, 1);
-vals = cell(19, 1);
+vals = cell(21, 1);
 
 vals{1, 1}  = 'CSD: In bed time';
 vals{2, 1}  = 'CSD: Lights off time';
