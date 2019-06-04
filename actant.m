@@ -569,10 +569,9 @@ function pushbutton_analyze_Callback(hObject, eventdata, handles)
 
     
     % Get and check arguments
-    n = get(handles.popupmenu_dataset, 'Value');
     
     try 
-        dataset = actant_datasets{n};
+        dataset = get_plot_data('Main', handles)
     catch ME
         % Give more information for mismatch.
         if (strcmp(ME.identifier,'MATLAB:badsubscript'))
