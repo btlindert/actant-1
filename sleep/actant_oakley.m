@@ -596,11 +596,20 @@ end
 function date = dateconversion(date, time, option)
 
 time = num2str(time);
-MM = str2double(time(end-1:end));
-HH = str2double(time(1:end-2));
+if length(time) == 1
+    MM = str2double(time(end:end));
+    HH = 0;
+else
+    MM = str2double(time(end-1:end));
+    HH = str2double(time(1:end-2));
+end
 date = datevec(date, 'dd-mm-yy');
 <<<<<<< HEAD
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> parent of b1a992b... Revert "Fixes a bug which happens when sleep diary entry is between 0000 and 0009"
     if isempty(HH)
 =======
 
