@@ -599,12 +599,17 @@ time = num2str(time);
 MM = str2double(time(end-1:end));
 HH = str2double(time(1:end-2));
 date = datevec(date, 'dd-mm-yy');
+<<<<<<< HEAD
     
     if isempty(HH)
+=======
+
+    if isnan(HH)
+>>>>>>> parent of 712763b... Revert "Fixes bug where NAN values mess up date calculations"
         HH = 0;
     end
     
-    if isempty(MM)
+    if isnan(MM)
         MM = 0;
     end
 
