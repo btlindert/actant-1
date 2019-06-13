@@ -605,11 +605,11 @@ else
 end
 date = datevec(date, 'dd-mm-yy');
 
-    if isnan(HH)
+    if isempty(HH)
         HH = 0;
     end
     
-    if isnan(MM)
+    if isempty(MM)
         MM = 0;
     end
 
