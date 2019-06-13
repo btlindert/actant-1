@@ -166,11 +166,6 @@ function actant_open_dataset(fname, fi, handles)
         data = load(fname);
         waitbar(1, h);
         close(h);
-    elseif fi == g_type_idx.geneactiv_bin,
-        h = waitbar(0, 'Please wait while the data is loaded...');
-        data = load_geneactiv_bin(fname);
-        waitbar(1, h);
-        close(h);
     elseif fi == g_type_idx.actopsy_csv,
         h = waitbar(0, 'Please wait while the data is loaded...');
         data = load_actopsy(fname);
